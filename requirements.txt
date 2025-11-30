@@ -1,0 +1,8 @@
+# MDAP Agent Dependencies
+
+# CLI Interface
+rich>=13.0.0
+
+# Note: Also requires the MDAP framework at:
+# C:/Users/conta/experiment-01/mdap-agent/
+# And Claude CLI installed and configured
