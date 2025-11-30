@@ -23,8 +23,6 @@ from dataclasses import dataclass, field
 from typing import Optional, Callable, Any
 from enum import Enum
 
-sys.path.insert(0, 'C:/Users/conta/experiment-01/mdap-agent')
-
 from mdap.types import Step, StepType, Language, MDAPConfig
 from mdap.llm.client_cli import ClaudeCLIClient
 from mdap.mdap.voter import Voter

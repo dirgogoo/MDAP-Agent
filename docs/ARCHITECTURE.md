@@ -195,15 +195,25 @@ mdap-agent/
     └── *.md                 # Documentação
 ```
 
-## Dependências Externas
+## Estrutura do Framework MDAP
 
-O MDAP Agent depende do framework MDAP em:
+O framework MDAP está incluído no repositório:
 ```
-C:/Users/conta/experiment-01/mdap-agent/
+mdap/
+├── types.py            # Step, StepType, Language, MDAPConfig
+├── llm/
+│   ├── client.py       # ClaudeClient (API)
+│   └── client_cli.py   # ClaudeCLIClient (CLI local)
 ├── mdap/
-│   ├── types.py            # Step, StepType, Language, MDAPConfig
-│   ├── llm/
-│   │   └── client_cli.py   # ClaudeCLIClient
-│   └── mdap/
-│       └── voter.py        # Voter (votação MDAP)
+│   ├── voter.py        # Voter (votação MDAP)
+│   ├── discriminator.py # Comparador semântico
+│   └── red_flag.py     # Filtros de qualidade
+├── decision/
+│   ├── expander.py     # EXPAND
+│   ├── decomposer.py   # DECOMPOSE
+│   ├── generator.py    # GENERATE
+│   └── validator.py    # VALIDATE
+└── agent/
+    ├── loop.py         # Agent loop principal
+    └── context.py      # Contexto acumulado
 ```

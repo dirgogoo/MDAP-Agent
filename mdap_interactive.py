@@ -22,9 +22,6 @@ import re
 import time
 from datetime import datetime
 
-sys.path.insert(0, 'C:/Users/conta/experiment-01/mdap-agent')
-sys.path.insert(0, 'C:/Users/conta/.claude/skills/mdap-agent')
-
 from rich.console import Console
 from rich.panel import Panel
 from rich import box

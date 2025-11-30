@@ -3,6 +3,8 @@
 # CLI Interface
 rich>=13.0.0
 
-# Note: Also requires the MDAP framework at:
-# C:/Users/conta/experiment-01/mdap-agent/
-# And Claude CLI installed and configured
+# Async support
+asyncio-compat>=0.1.0
+
+# Note: Claude CLI must be installed and configured
+# The MDAP framework is included in this repository (mdap/ directory)
