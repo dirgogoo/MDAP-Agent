@@ -14,23 +14,75 @@ MDAP (Massively Decomposed Agentic Processes) é uma técnica que:
 
 | Feature | Descrição |
 |---------|-----------|
+| **REPL Inteligente** | Orquestrador com detecção de intenção por IA |
+| **Perguntas com Opções** | Coleta contexto com múltipla escolha |
 | **Agent Loop Dinâmico** | Decide próximo passo automaticamente |
-| **Chamadas Aninhadas** | Função complexa gera sub-funções recursivamente |
 | **Votação MDAP** | Múltiplos candidatos votados por equivalência |
-| **CLI Interativa** | Checkpoints para aprovar/modificar decisões |
-| **Syntax Highlight** | Código formatado com Rich |
+| **Meta-Inteligência** | Explica decisões e rastreia recursos |
+| **Controle Híbrido** | Automático com interrupções (pause/resume) |
 
 ## Quick Start
 
-### Modo Automático
+### REPL Inteligente (Recomendado)
+
+```bash
+pip install -e .
+mdap-repl
+```
+
+```
+> olá, o que você faz?
+# Mostra capacidades
+
+> crie um validador de CPF
+# Detecta tarefa → Executa pipeline
+
+> quero um sistema de autenticação completo
+# Detecta tarefa complexa → Faz perguntas → Executa
+
+> como está o progresso?
+# Mostra status do pipeline
+```
+
+### Modo Automático (Legacy)
+
 ```bash
 python mdap_runner.py "Criar validador de CPF brasileiro"
 ```
 
-### Modo Interativo (Recomendado)
+### Modo Interativo com Checkpoints (Legacy)
+
 ```bash
 python mdap_interactive.py "Criar validador de CPF brasileiro"
 ```
+
+## Comandos do REPL
+
+| Comando | Descrição |
+|---------|-----------|
+| `/run <task>` | Executa pipeline MDAP |
+| `/expand <task>` | Expande requisitos com perguntas |
+| `/pause` | Pausa execução |
+| `/resume` | Retoma execução |
+| `/cancel` | Cancela pipeline |
+| `/status` | Mostra estado atual |
+| `/explain` | Explica o que está fazendo |
+| `/history` | Histórico de decisões |
+| `/resources` | Uso de recursos (tokens/custo) |
+| `/help` | Lista de comandos |
+
+## Detecção de Intenção por IA
+
+O orquestrador classifica automaticamente sua mensagem:
+
+| Intenção | Exemplo | Ação |
+|----------|---------|------|
+| Tarefa Simples | "crie um validador de email" | Executa pipeline |
+| Tarefa Complexa | "sistema de autenticação completo" | Perguntas → Pipeline |
+| Explorar | "quais requisitos preciso?" | Expande requisitos |
+| Status | "como está?" | Mostra progresso |
+| Ajuda | "o que você faz?" | Mostra capacidades |
+| Chat | "como funciona X?" | Responde via LLM |
 
 ## Pipeline
 
@@ -38,15 +90,23 @@ python mdap_interactive.py "Criar validador de CPF brasileiro"
 TAREFA
    │
    ▼
-[1] EXPAND
+[1] INTENT DETECTION (IA)
+   │ "Qual a intenção do usuário?"
+   │ → Classifica em 12 categorias
+   ▼
+[2] QUESTIONS (se TASK_COMPLEX)
+   │ "Preciso de mais contexto"
+   │ → Perguntas com opções
+   ▼
+[3] EXPAND
    │ "Quais requisitos atômicos?"
    │ → Lista de requisitos
    ▼
-[2] DECOMPOSE
+[4] DECOMPOSE
    │ "Como organizar em funções?"
    │ → Lista de assinaturas
    ▼
-[3] GENERATE (com MDAP)
+[5] GENERATE (com MDAP)
    │ → Votação para cada função
    │ → Código validado
    ▼
@@ -57,19 +117,32 @@ RESULTADO
 
 ```
 mdap-agent/
-├── mdap_runner.py        # Modo automático
-├── mdap_interactive.py   # Modo interativo com checkpoints
+├── mdap_repl.py          # Entry point do REPL
+├── mdap_runner.py        # Modo automático (legacy)
+├── mdap_interactive.py   # Modo interativo (legacy)
+├── mdap/                 # Core MDAP
+│   ├── agent/            # Agent loop e contexto
+│   ├── decision/         # Expander, Decomposer, Generator
+│   ├── execution/        # Tools (Read, Write, Grep, etc)
+│   ├── llm/              # Clientes LLM
+│   └── mdap/             # Voter, Discriminator, RedFlag
 ├── mdap_cli/
-│   ├── events.py         # Sistema de eventos pub/sub
-│   ├── display.py        # Display em tempo real (Rich)
-│   ├── prompts.py        # Checkpoints interativos
-│   └── code_view.py      # Syntax highlight
-└── docs/
-    ├── ARCHITECTURE.md   # Arquitetura detalhada
-    ├── ORIGINAL_PLAN.md  # Plano original do projeto
-    ├── USAGE.md          # Guia de uso
-    ├── CLI_INTERACTIVE.md # CLI interativa
-    └── MDAP_VOTING.md    # Votação MDAP explicada
+│   ├── repl/             # REPL interativo
+│   │   ├── session.py    # Loop principal com smart mode
+│   │   ├── commands.py   # Comandos slash
+│   │   ├── questioner.py # Perguntas com opções
+│   │   └── ui.py         # Componentes visuais
+│   ├── orchestrator/     # Orquestrador inteligente
+│   │   ├── orchestrator.py  # Coordenador principal
+│   │   ├── state.py      # State machine (9 estados)
+│   │   ├── intent.py     # Detecção de intenção por IA
+│   │   ├── tracker.py    # Histórico de decisões
+│   │   ├── resources.py  # Tokens/custo/tempo
+│   │   ├── meta.py       # Explicações
+│   │   └── interrupts.py # Pause/resume/cancel
+│   ├── events.py         # Sistema pub/sub
+│   └── display.py        # Display Rich
+└── docs/                 # Documentação
 ```
 
 ## Requisitos
@@ -79,16 +152,15 @@ mdap-agent/
 - Claude CLI instalado (`claude --print`)
 
 ```bash
-pip install rich
+pip install -e ".[dev]"
 ```
 
 ## Documentação
 
-- [Arquitetura](docs/ARCHITECTURE.md)
-- [Plano Original](docs/ORIGINAL_PLAN.md)
-- [Guia de Uso](docs/USAGE.md)
-- [CLI Interativa](docs/CLI_INTERACTIVE.md)
-- [Votação MDAP](docs/MDAP_VOTING.md)
+- [CLAUDE.md](CLAUDE.md) - Guia completo para Claude Code
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Arquitetura detalhada
+- [docs/USAGE.md](docs/USAGE.md) - Guia de uso
+- [docs/MDAP_VOTING.md](docs/MDAP_VOTING.md) - Votação MDAP explicada
 
 ## Baseado Em
 

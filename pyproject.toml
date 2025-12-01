@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "anthropic>=0.25.0",
+    "rich>=13.0.0",
 ]
 
 [project.optional-dependencies]
@@ -34,13 +34,17 @@ dev = [
 
 [project.scripts]
 mdap-agent = "mdap.agent.loop:main"
+mdap-repl = "mdap_repl:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["mdap"]
+packages = ["mdap", "mdap_cli"]
+
+[tool.hatch.build.targets.sdist]
+include = ["mdap", "mdap_cli", "mdap_repl.py"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

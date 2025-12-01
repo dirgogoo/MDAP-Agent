@@ -44,6 +44,15 @@ class EventType(Enum):
     TASK_ERROR = "task_error"
     CHECKPOINT = "checkpoint"
 
+    # Orchestrator
+    ORCHESTRATOR_STATE_CHANGE = "orchestrator_state_change"
+    ORCHESTRATOR_PROGRESS = "orchestrator_progress"
+    ORCHESTRATOR_INTERRUPT = "orchestrator_interrupt"
+    ORCHESTRATOR_CHECKPOINT = "orchestrator_checkpoint"
+    ORCHESTRATOR_EXPLAIN = "orchestrator_explain"
+    ORCHESTRATOR_BUDGET_WARNING = "orchestrator_budget_warning"
+    ORCHESTRATOR_DECISION = "orchestrator_decision"
+
 
 @dataclass
 class Event:
